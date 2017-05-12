@@ -15,6 +15,13 @@ function forEach(array, fn) {
  Напишите аналог встроенного метода map для работы с массивами
  */
 function map(array, fn) {
+    var result = [];
+
+    for (var i = 0; i < array.length; ++i) {
+        result.push(fn(array[i], i, array));
+    }
+
+    return result;
 }
 
 /*
@@ -22,6 +29,15 @@ function map(array, fn) {
  Напишите аналог встроенного метода reduce для работы с массивами
  */
 function reduce(array, fn, initial) {
+    var previousValue,
+        index;
+    (typeof initial != 'undefined') ? (previousValue = initial, index = 0) : (previousValue = array[0], index = 1);
+    
+    for(index; index < array.length; ++index) {
+        previousValue = fn(previousValue, array[index], index, array);
+    }
+    
+    return previousValue;
 }
 
 /*
@@ -30,6 +46,7 @@ function reduce(array, fn, initial) {
  Функция должна удалить указанное свойство из указанного объекта
  */
 function deleteProperty(obj, prop) {
+    return delete obj[prop];
 }
 
 /*
@@ -38,6 +55,7 @@ function deleteProperty(obj, prop) {
  Функция должна проверить существует ли укзаанное свойство в указанном объекте
  */
 function hasProperty(obj, prop) {
+    return obj.hasOwnProperty(prop);
 }
 
 /*
@@ -45,6 +63,7 @@ function hasProperty(obj, prop) {
  Функция должна получить все перечисляемые свойства объекта и вернуть их в виде массива
  */
 function getEnumProps(obj) {
+    return Object.keys(obj);
 }
 
 /*
@@ -52,6 +71,11 @@ function getEnumProps(obj) {
  Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
  */
 function upperProps(obj) {
+    var upperProps = [];
+    for(var prop in obj){
+        upperProps.push(prop.toUpperCase());
+    }
+    return upperProps;
 }
 
 /*
@@ -59,14 +83,51 @@ function upperProps(obj) {
  Напишите аналог встроенного метода slice для работы с массивами
  */
 function slice(array, from, to) {
-}
+    if (typeof from == 'undefined') {
+        from = 0;
+    }
+    if (from < 0) {
+        from = array.length + from;
+    }
+    if (from < 0) {
+            from = 0;
+    }
+    if (typeof to == 'undefined') {
+        to = array.length;
+    }
+    if (to < 0) {
+        to = array.length + to;
+    }
+    if (to > array.length) {
+        to = array.length;
+    }
+    
+    var slicedArray = [];
 
+    for (from; from < to; ++from) {
+        slicedArray.push(array[from]);
+    }
+
+    return slicedArray;
+}
 /*
  Задача 9 *:
  Функция принимает объект и должна вернуть Proxy для этого объекта
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    return new Proxy(obj, {
+        set(target, prop, value){
+            console.log(value);
+            try{
+                target[prop] = value * value;
+            }catch(e){
+                return false;
+            }
+            
+            return true;
+        }
+    });
 }
 
 export {
